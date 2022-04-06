@@ -1,7 +1,7 @@
 from bplustree import BplusTree
 from bplustree import printTree
 
-bpt = BplusTree(3)  #Number of keys in one node is passed as parameter
+bpt = BplusTree(4)  #Number of keys in one node is passed as parameter
 bpt.insert('aa', 3)
 bpt.insert('aa', 4)
 bpt.insert('ab', 4)

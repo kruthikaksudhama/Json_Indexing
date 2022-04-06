@@ -10,6 +10,7 @@ class idxNode:  #Consists of array of B+ trees of children
         self.children = BplusTree(keys_per_node)
         self.array_children = BplusTree(keys_per_node)
         self.value_tree = BplusTree(keys_per_node)
+        self.array_value_tree = BplusTree(keys_per_node)
 
 class Path:
 
@@ -17,17 +18,15 @@ class Path:
         self.arr_idx = []
         self.attr_path = []
 
+#Example of a path:
+# Institution
+# eg_path.attr_path = [college, students,  name, first_name]
+# eg_path.arr_idx = [(7->arr_idx, 2->level), (), ..]
 
-# Todo: differentiate between numbers and strings in path
-def search_path(path, node):     #Check if there is an existing node at the given path
-
-    for attr in path:
-        #Find using B+ tree search
-        curr = node.search(attr)   #Modify
-        if not len(curr):
-            return None
-
-    return curr
+# process [Array school documemts] 
+# while processing 7th documentat root:
+#   attr_path= [nirf]
+#   arr_idx=[(7, 0)]
 
 def process_document(d, path, index):
 
@@ -36,20 +35,20 @@ def process_document(d, path, index):
         path.attr_path.append(key)
         if type(value) == dict:     #Normal internal node
 
-            if not len(path) or type(path[-1]) == tuple:
+            if not len(path.attr_path) or  len(path.attr_path) == path.arr_idx[-1][1] == tuple:     #The document is part of an array
                 arr_child =  index.arr_children.search(key)
                 if not arr_child:
                     arr_child = idxNode()
 
                 arr_child = process_document(value, path, arr_child)
                 index.arr_children.insert(key, arr_child)
-            else:
+            else:                                                                                   #The document is a child of a document
                 child =  index.children.search(key)
                 if not child:
                     child = idxNode()
 
                 child = process_document(value, path, child)
-                index.arr_children.insert(key, child)
+                index.children.insert(key, child)
 
         elif type(value) == list:
 
@@ -77,15 +76,14 @@ def process_arr(arr, path, index):
 
         else:
 
-            index.value_tree.insert(elem, path)
+            index.array_value_tree.insert(elem, path)
         
     return index
 
-if __name__ == '__main__':
+def construct(file_path='../Dataset/dblp_1L.json', num_docs=1):
 
     documents=[]
-    num_docs = 1
-    f = open('../Dataset/dblp_1L.json')
+    f = open(file_path)
     for line in f:
         if len(documents) >= num_docs:
             break
@@ -93,6 +91,12 @@ if __name__ == '__main__':
         documents.append(d)
     f.close()
 
-
     index = process_arr(documents, Path(), idxNode(keys_per_node))
+    return index
+
+if __name__ == '__main__':
+
+    file_path = '../Dataset/dblp_1L.json'
+    index = construct(file_path)
+    print('Number of attributes in level 0 of index: ') #Use API to get number of (key, value) pairs
 
