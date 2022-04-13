@@ -36,16 +36,20 @@ def process_document(d, path, index):
         if type(value) == dict:     #Normal internal node
 
             if not len(path.attr_path) or  len(path.attr_path) == path.arr_idx[-1][1] == tuple:     #The document is part of an array
-                arr_child =  index.arr_children.search(key)
-                if not arr_child:
+                res =  index.arr_children.search(key)
+                if not len(res):
                     arr_child = idxNode()
+                else:
+                    arr_child= res[0]
 
                 arr_child = process_document(value, path, arr_child)
                 index.arr_children.insert(key, arr_child)
             else:                                                                                   #The document is a child of a document
-                child =  index.children.search(key)
-                if not child:
+                res =  index.children.search(key)
+                if not len(res):
                     child = idxNode()
+                else:
+                    child = res[0]
 
                 child = process_document(value, path, child)
                 index.children.insert(key, child)

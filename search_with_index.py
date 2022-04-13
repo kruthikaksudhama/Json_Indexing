@@ -15,11 +15,11 @@ def search_query(index, path, value):
         else:
 
             if typ == 'arr':
-                curr_node = curr_node.arr_children.search(x)
+                res = curr_node.arr_children.search(x)
             else:
-                curr_node = curr_node.children.search(x)
+                res = curr_node.children.search(x)
 
-            if not curr_node:
+            if not len(res):
                 return []
 
             typ = 'node'
