@@ -76,6 +76,19 @@ class BplusTree:
                     break
         return current_node
 
+
+    def search_val(self, val):
+        node = self.search(val)
+        count = 0
+        for i in node.values:
+            if(i==val):
+                print("The value ", val, "is in Doc", node.keys[count])
+                return node.keys[count]
+            count = count+1
+        print("The value is not any document")
+        return []
+
+
     # Find the node
     def find(self, value, key):
         l = self.search(value)

@@ -1,5 +1,5 @@
 import json
-from bplustree import BplusTree
+from bplustree import BplusTree, Node
 
 #Parameters
 keys_per_node=3
@@ -36,7 +36,7 @@ def process_document(d, path, index):
         if type(value) == dict:     #Normal internal node
 
             if not len(path.attr_path) or  len(path.attr_path) == path.arr_idx[-1][1] == tuple:     #The document is part of an array
-                res =  index.arr_children.search(key)
+                res =  index.arr_children.search_val(key)
                 if not len(res):
                     arr_child = idxNode()
                 else:
@@ -45,7 +45,7 @@ def process_document(d, path, index):
                 arr_child = process_document(value, path, arr_child)
                 index.arr_children.insert(key, arr_child)
             else:                                                                                   #The document is a child of a document
-                res =  index.children.search(key)
+                res =  index.children.search_val(key)
                 if not len(res):
                     child = idxNode()
                 else:
@@ -84,11 +84,15 @@ def process_arr(arr, path, index):
         
     return index
 
-def construct(file_path='../Dataset/dblp_1L.json', num_docs=1):
+def construct(file_path='./dblp_1L.json', num_docs=1):
 
     documents=[]
     f = open(file_path)
     for line in f:
+        if(not len(line)):
+            continue
+        print(len(documents))
+        print(line)
         if len(documents) >= num_docs:
             break
         d = json.loads(line)
@@ -101,6 +105,6 @@ def construct(file_path='../Dataset/dblp_1L.json', num_docs=1):
 if __name__ == '__main__':
 
     file_path = '../Dataset/dblp_1L.json'
-    index = construct(file_path)
+    index = construct(file_path, 5)
     print('Number of attributes in level 0 of index: ') #Use API to get number of (key, value) pairs
 

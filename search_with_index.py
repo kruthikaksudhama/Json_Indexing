@@ -1,6 +1,6 @@
 
 from index_construct import construct
-
+from bplustree import Node, BplusTree
 
 def search_query(index, path, value):
 
