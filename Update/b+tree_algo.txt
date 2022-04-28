@@ -1,0 +1,29 @@
+
+
+to insert in a B+tree 
+
+1.check the i where val<root.value[i]
+
+2.then go to node root.child[i]
+
+3.else go to root.child[i+1] 
+-> parent = root
+4.root = root.child[..], then loop 1, 2, 3, 4
+
+5.if child[i+1] does not exist
+6. check if len(root.value<self.n)
+7. add value and rcp to this node
+
+8.else check if len(root.value==self.n)
+9.add value and rcp to this node
+10.length = len(root.value)
+11.middle = length // 2
+12.left = root.value[:middle]
+13.right = root.value[middle:]
+14.add middle to parent
+15.check whether len(parent)<self.n
+16.else length = len(parent)
+17.middle = length //2
+18.left = parent.value[:middle]
+19.right = parent.value[middle+1:]
+repeat steps from 14
